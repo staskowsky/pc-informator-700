@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="" />
+    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pc-informator-700.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pc-informator-700.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sample/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sample/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/sample.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sample.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/sample/Controller.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sample/Controller.class" afterDir="false" />
+    </list>
     <ignored path="JavaFxApplication.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -70,11 +80,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/sample/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="138" column="43" selection-start-line="138" selection-start-column="43" selection-end-line="138" selection-end-column="43" />
+            <state relative-caret-position="527">
+              <caret line="82" column="33" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -82,10 +92,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/sample.fxml">
-          <provider editor-type-id="text-editor" />
           <provider selected="true" editor-type-id="JavaFX-Scene-Builder" />
+          <provider editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -95,13 +105,16 @@
       <setting name="OPEN_NEW_TAB" value="false" />
     </FindUsagesManager>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/sample/Main.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/sample.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/sample/Controller.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/sample.fxml" />
       </list>
     </option>
   </component>
@@ -118,6 +131,7 @@
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
   </component>
@@ -126,6 +140,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -159,11 +174,17 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="sample" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="pc-informator-700" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pc-informator-700" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -179,6 +200,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1570816159815" />
     <property name="dynamic.classpath" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../compshop" />
     <property name="recentsLimit" value="5" />
   </component>
   <component name="RecentsManager">
@@ -284,18 +306,22 @@
       <workItem from="1359379250712" duration="1302000" />
       <workItem from="1570815308980" duration="862000" />
       <workItem from="1570826951411" duration="4465000" />
-      <workItem from="1570874050177" duration="7135000" />
+      <workItem from="1570874050177" duration="7806000" />
+      <workItem from="1570923669859" duration="292000" />
+      <workItem from="1570924169230" duration="41000" />
+      <workItem from="1571059145375" duration="1191000" />
+      <workItem from="1571063041386" duration="3067000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13764000" />
+    <option name="totallyTimeSpent" value="19026000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.124200426" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.036780383" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" />
       <window_info id="Designer" order="3" />
@@ -318,7 +344,7 @@
       <window_info anchor="bottom" id="Messages" order="13" weight="0.32936078" />
       <window_info anchor="bottom" id="Docker" order="14" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="15" />
-      <window_info anchor="bottom" id="Terminal" order="16" />
+      <window_info anchor="bottom" id="Terminal" order="16" weight="0.32936078" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -361,19 +387,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/sample.fxml">
-      <provider editor-type-id="text-editor" />
-      <provider selected="true" editor-type-id="JavaFX-Scene-Builder" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sample/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="138" column="43" selection-start-line="138" selection-start-column="43" selection-end-line="138" selection-end-column="43" />
+        <state relative-caret-position="527">
+          <caret line="82" column="33" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/sample.fxml">
+      <provider selected="true" editor-type-id="JavaFX-Scene-Builder" />
+      <provider editor-type-id="text-editor" />
     </entry>
   </component>
 </project>

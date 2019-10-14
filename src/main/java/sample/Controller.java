@@ -8,10 +8,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import oshi.SystemInfo;
 import oshi.hardware.*;
+import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +29,15 @@ public class Controller {
     @FXML
     public Button cpuBtn;
     @FXML
+    public Button moboBtn;
+    @FXML
     public Button sensorBtn;
     @FXML
     public Button diskBtn;
+    @FXML
+    public Button systemBtn;
+    @FXML
+    public Button processesBtn;
     @FXML
     public ListView<String> listView;
 
@@ -39,6 +47,20 @@ public class Controller {
         list.clear();
         category.setText("Procesor");
         printProcessor(hal.getProcessor());
+    }
+
+    public void getMobo() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Płyta główna");
+        printMobo(hal.getComputerSystem());
+    }
+
+    public void getSystem() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("System");
+        printSystem(os);
     }
 
     public void getSensor() {
@@ -53,6 +75,13 @@ public class Controller {
         list.clear();
         category.setText("Dyski");
         printDisk(hal.getDiskStores());
+    }
+
+    public void getProcesses() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Procesy");
+        printProcesses(os, hal.getMemory());
     }
 
     public void printProcessor(CentralProcessor processor) {
@@ -144,24 +173,59 @@ public class Controller {
     }
 
     public void printSensor(Sensors sensors) {
-        if(sensors.getCpuTemperature()!=0) {
+        if (sensors.getCpuTemperature() != 0) {
             list.add("CPU temperature: " + sensors.getCpuTemperature());
-        } else {
-            list.add("CPU temperature: not found");
         }
-        if(sensors.getCpuVoltage()!=0) {
+        if (sensors.getCpuVoltage() != 0) {
             list.add("CPU voltage: " + sensors.getCpuVoltage());
-        } else {
-            list.add("CPU voltage: not found");
         }
-        if(sensors.getFanSpeeds().length>0) {
+        if (sensors.getFanSpeeds().length > 0) {
             int[] speeds = sensors.getFanSpeeds();
-            for(int i=0;i<speeds.length;i++) {
+            for (int i = 0; i < speeds.length; i++) {
                 list.add("Fan " + i + " speed: " + speeds[i] + "rpm");
             }
-        } else {
-            list.add("Fan speed: not found");
+            ObservableList<String> observableArrayList =
+                    FXCollections.observableArrayList(list);
+            listView.setItems(observableArrayList);
         }
+    }
+    public void printMobo(ComputerSystem computerSystem) {
+        list.add("Płyta główna: " + computerSystem.getBaseboard().getModel());
+        list.add(" Dystrybucja: " + computerSystem.getBaseboard().getManufacturer());
+        list.add(" Numer seryjny: " + computerSystem.getBaseboard().getSerialNumber());
+        list.add(" Wersja: " + computerSystem.getBaseboard().getVersion());
+        list.add("");
+        list.add("BIOS: " + computerSystem.getFirmware().getName());
+        list.add(" Dystrybucja: " + computerSystem.getFirmware().getManufacturer());
+        list.add(" Wersja: " + computerSystem.getFirmware().getVersion());
+        list.add(" Data wydania: " + computerSystem.getFirmware().getReleaseDate());
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+    public void printSystem(final OperatingSystem os) {
+        list.add(String.valueOf(os));
+        list.add("Booted: " + Instant.ofEpochSecond(os.getSystemBootTime()));
+        list.add("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
+        list.add("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+    public void printProcesses(OperatingSystem os, GlobalMemory memory) {
+        list.add("Processes: " + os.getProcessCount() + ", Threads: " + os.getThreadCount());
+        // Sort by highest CPU
+        List<OSProcess> procs = Arrays.asList(os.getProcesses(5, OperatingSystem.ProcessSort.CPU));
+
+        list.add("   PID  %CPU %MEM       VSZ       RSS Name");
+        for (int i = 0; i < procs.size() && i < 5; i++) {
+            OSProcess p = procs.get(i);
+            list.add(String.format(" %5d %5.1f %4.1f %9s %9s %s", p.getProcessID(),
+                    100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+                    100d * p.getResidentSetSize() / memory.getTotal(), FormatUtil.formatBytes(p.getVirtualSize()),
+                    FormatUtil.formatBytes(p.getResidentSetSize()), p.getName()));
+        }
+
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);

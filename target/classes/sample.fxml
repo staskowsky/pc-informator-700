@@ -22,9 +22,12 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Button fx:id="cpuBtn" layoutX="82.0" layoutY="14.0" mnemonicParsing="false" onAction="#getCpu" text="Procesor" />
-                  <Button fx:id="diskBtn" layoutX="82.0" layoutY="75.0" mnemonicParsing="false" onAction="#getDisk" prefHeight="25.0" prefWidth="63.0" text="Dysk" />
-                  <Button fx:id="sensorBtn" layoutX="82.0" layoutY="44.0" mnemonicParsing="false" onAction="#getSensor" prefHeight="25.0" prefWidth="63.0" text="Czujnik" />
+                  <Button fx:id="cpuBtn" layoutX="73.0" layoutY="14.0" mnemonicParsing="false" onAction="#getCpu" prefHeight="25.0" prefWidth="89.0" text="Procesor" />
+                  <Button fx:id="diskBtn" layoutX="72.0" layoutY="75.0" mnemonicParsing="false" onAction="#getDisk" prefHeight="25.0" prefWidth="89.0" text="Dysk" />
+                  <Button fx:id="sensorBtn" layoutX="74.0" layoutY="44.0" mnemonicParsing="false" onAction="#getSensor" prefHeight="25.0" prefWidth="89.0" text="Czujnik" />
+                  <Button fx:id="moboBtn" layoutX="70.0" layoutY="108.0" mnemonicParsing="false" onAction="#getMobo" prefHeight="25.0" prefWidth="89.0" text="Płyta główna" />
+                  <Button fx:id="systemBtn" layoutX="69.0" layoutY="141.0" mnemonicParsing="false" onAction="#getSystem" prefHeight="25.0" prefWidth="89.0" text="System" />
+                  <Button fx:id="processesBtn" layoutX="69.0" layoutY="173.0" mnemonicParsing="false" onAction="#getProcesses" prefHeight="25.0" prefWidth="89.0" text="Procesy" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
