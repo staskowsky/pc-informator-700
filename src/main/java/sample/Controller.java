@@ -39,6 +39,10 @@ public class Controller {
     @FXML
     public Button processesBtn;
     @FXML
+    public Button usbBtn;
+    @FXML
+    public Button displayBtn;
+    @FXML
     public ListView<String> listView;
 
 
@@ -82,6 +86,20 @@ public class Controller {
         list.clear();
         category.setText("Procesy");
         printProcesses(os, hal.getMemory());
+    }
+
+    public void getUsbDevices() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Urządzenia USB");
+        printUsbDevices(hal.getUsbDevices(true));
+    }
+
+    public void getDisplays() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Monitory");
+        printDisplays(hal.getDisplays());
     }
 
     public void printProcessor(CentralProcessor processor) {
@@ -226,6 +244,27 @@ public class Controller {
                     FormatUtil.formatBytes(p.getResidentSetSize()), p.getName()));
         }
 
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+
+    public void printUsbDevices(UsbDevice[] usbDevices) {
+        for (UsbDevice usbDevice : usbDevices) {
+            list.add(String.valueOf(usbDevice));
+        }
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+
+    public void printDisplays(Display[] displays) {
+        int i = 1;
+        for (Display display : displays) {
+            list.add(" Monitor " + i + ":");
+            list.add(String.valueOf(display));
+            i++;
+        }
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
