@@ -28,6 +28,8 @@
                   <Button fx:id="moboBtn" layoutX="70.0" layoutY="108.0" mnemonicParsing="false" onAction="#getMobo" prefHeight="25.0" prefWidth="89.0" text="Płyta główna" />
                   <Button fx:id="systemBtn" layoutX="69.0" layoutY="141.0" mnemonicParsing="false" onAction="#getSystem" prefHeight="25.0" prefWidth="89.0" text="System" />
                   <Button fx:id="processesBtn" layoutX="69.0" layoutY="173.0" mnemonicParsing="false" onAction="#getProcesses" prefHeight="25.0" prefWidth="89.0" text="Procesy" />
+                  <Button fx:id="usbBtn" layoutX="64.0" layoutY="206.0" mnemonicParsing="false" onAction="#getUsbDevices" text="Urządzenia USB" />
+                  <Button fx:id="displayBtn" layoutX="81.0" layoutY="238.0" mnemonicParsing="false" onAction="#getDisplays" text="Monitory" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
