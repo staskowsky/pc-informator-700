@@ -3,22 +3,27 @@ package sample;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import oshi.SystemInfo;
 import oshi.hardware.*;
+import oshi.software.os.FileSystem;
+import oshi.software.os.OSFileStore;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
 
+import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller implements Initializable {
     SystemInfo si = new SystemInfo();
     HardwareAbstractionLayer hal = si.getHardware();
     OperatingSystem os = si.getOperatingSystem();
@@ -42,6 +47,12 @@ public class Controller {
     public Button usbBtn;
     @FXML
     public Button displayBtn;
+    @FXML
+    public Button soundCardBtn;
+    @FXML
+    public Button fileSystemBtn;
+    @FXML
+    public Button powerSourcesBtn;
     @FXML
     public ListView<String> listView;
 
@@ -100,6 +111,24 @@ public class Controller {
         list.clear();
         category.setText("Monitory");
         printDisplays(hal.getDisplays());
+    }
+
+    public void getSoundCards() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Karty dźwiękowe");
+        printSoundCards(hal.getSoundCards());
+    }
+
+    public void getFileSystem() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("System plików");
+        printFileSystem(os.getFileSystem());
+    }
+
+    public void getPowerSources() {
+        printPowerSources(hal.getPowerSources());
     }
 
     public void printProcessor(CentralProcessor processor) {
@@ -268,5 +297,59 @@ public class Controller {
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
+    }
+
+    public void printSoundCards(SoundCard[] cards) {
+        for (SoundCard card : cards) {
+            list.add(" " + String.valueOf(card));
+        }
+
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+
+    public void printFileSystem(FileSystem fileSystem) {
+        list.add(String.format(" File Descriptors: %d/%d", fileSystem.getOpenFileDescriptors(),
+                fileSystem.getMaxFileDescriptors()));
+
+        OSFileStore[] fsArray = fileSystem.getFileStores();
+        for (OSFileStore fs : fsArray) {
+            long usable = fs.getUsableSpace();
+            long total = fs.getTotalSpace();
+            list.add(String.format(
+                    " %s (%s) [%s] %s of %s free (%.1f%%), %s of %s files free (%.1f%%) is %s "
+                            + (fs.getLogicalVolume() != null && fs.getLogicalVolume().length() > 0 ? "[%s]" : "%s")
+                            + " and is mounted at %s",
+                    fs.getName(), fs.getDescription().isEmpty() ? "file system" : fs.getDescription(), fs.getType(),
+                    FormatUtil.formatBytes(usable), FormatUtil.formatBytes(fs.getTotalSpace()), 100d * usable / total,
+                    FormatUtil.formatValue(fs.getFreeInodes(), ""), FormatUtil.formatValue(fs.getTotalInodes(), ""),
+                    100d * fs.getFreeInodes() / fs.getTotalInodes(), fs.getVolume(), fs.getLogicalVolume(),
+                    fs.getMount()));
+        }
+
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+
+    private void printPowerSources(PowerSource[] powerSources) {
+        StringBuilder sb = new StringBuilder("Power Sources: ");
+        if (powerSources.length == 0) {
+            list.add("Nie znaleziono.");
+        }
+        for (PowerSource powerSource : powerSources) {
+            list.add(powerSource.getName());
+            list.add("Pozostało " + powerSource.getRemainingCapacity()*100 + "%");
+            list.add("Pozostały czas pracy: " + powerSource.getTimeRemaining()/60 + "min");
+        }
+
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 }
