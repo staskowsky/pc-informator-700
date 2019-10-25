@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
@@ -29,10 +30,10 @@ import java.time.Instant;
 import java.util.*;
 
 public class Controller implements Initializable {
-    SystemInfo si = new SystemInfo();
-    HardwareAbstractionLayer hal = si.getHardware();
-    OperatingSystem os = si.getOperatingSystem();
-    List list = new ArrayList<String>();
+    private SystemInfo si = new SystemInfo();
+    private HardwareAbstractionLayer hal = si.getHardware();
+    private OperatingSystem os = si.getOperatingSystem();
+    private List<String> list = new ArrayList<>();
 
     @FXML
     public Label category;
@@ -149,15 +150,14 @@ public class Controller implements Initializable {
 
     public void printProcessor(CentralProcessor processor) {
         list.add(processor.toString());
-        list.add("Context Switches/Interrupts: " + processor.getContextSwitches() + " / " + processor.getInterrupts());
+        list.add("Przełączenia kontekstowe / przerwania: " + processor.getContextSwitches() + " / " + processor.getInterrupts());
 
         long[] prevTicks = processor.getSystemCpuLoadTicks();
         long[][] prevProcTicks = processor.getProcessorCpuLoadTicks();
-        list.add("CPU, IOWait, and IRQ ticks @ 0 sec:" + Arrays.toString(prevTicks));
-        // Wait a second...
+        list.add("CPU, IOWait, i IRQ ticks @ 0 sec:" + Arrays.toString(prevTicks));
         Util.sleep(1000);
         long[] ticks = processor.getSystemCpuLoadTicks();
-        list.add("CPU, IOWait, and IRQ ticks @ 1 sec:" + Arrays.toString(ticks));
+        list.add("CPU, IOWait, and IRQ @ 1 sec:" + Arrays.toString(ticks));
         long user = ticks[CentralProcessor.TickType.USER.getIndex()] - prevTicks[CentralProcessor.TickType.USER.getIndex()];
         long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
         long sys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()] - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
@@ -172,7 +172,7 @@ public class Controller implements Initializable {
                 "User: %.1f%% Nice: %.1f%% System: %.1f%% Idle: %.1f%% IOwait: %.1f%% IRQ: %.1f%% SoftIRQ: %.1f%% Steal: %.1f%%",
                 100d * user / totalCpu, 100d * nice / totalCpu, 100d * sys / totalCpu, 100d * idle / totalCpu,
                 100d * iowait / totalCpu, 100d * irq / totalCpu, 100d * softirq / totalCpu, 100d * steal / totalCpu));
-        list.add(String.format("CPU load: %.1f%%", processor.getSystemCpuLoadBetweenTicks(prevTicks) * 100));
+        list.add(String.format("Obciążenie procesora: %.1f%%", processor.getSystemCpuLoadBetweenTicks(prevTicks) * 100));
         // per core CPU
         list.add("CPU load per thread:");
         double[] load = processor.getProcessorCpuLoadBetweenTicks(prevProcTicks);
@@ -182,11 +182,11 @@ public class Controller implements Initializable {
         }
         long freq = processor.getVendorFreq();
         if (freq > 0) {
-            list.add("Vendor Frequency: " + FormatUtil.formatHertz(freq));
+            list.add("Częstotliwość taktowania zegara: " + FormatUtil.formatHertz(freq));
         }
         freq = processor.getMaxFreq();
         if (freq > 0) {
-            list.add("Max Frequency: " + FormatUtil.formatHertz(freq));
+            list.add("Maksymalna częstotliwość taktowania zegara: " + FormatUtil.formatHertz(freq));
         }
         long[] freqs = processor.getCurrentFreq();
         if (freqs[0] > 0) {
@@ -200,7 +200,7 @@ public class Controller implements Initializable {
         }
     }
 
-    public void printDisk(HWDiskStore[] diskStores) {
+    private void printDisk(HWDiskStore[] diskStores) {
         for (HWDiskStore disk : diskStores) {
             list.add(" Name: " + disk.getName());
             list.add(" Model: " + disk.getModel());
@@ -237,24 +237,24 @@ public class Controller implements Initializable {
         listView.setItems(observableArrayList);
     }
 
-    public void printSensor(Sensors sensors) {
+    private void printSensor(Sensors sensors) {
         if (sensors.getCpuTemperature() != 0) {
-            list.add("CPU temperature: " + sensors.getCpuTemperature());
+            list.add("Temperatura dysku: " + sensors.getCpuTemperature());
         }
         if (sensors.getCpuVoltage() != 0) {
-            list.add("CPU voltage: " + sensors.getCpuVoltage());
+            list.add("Napięcie dysku: " + sensors.getCpuVoltage());
         }
         if (sensors.getFanSpeeds().length > 0) {
             int[] speeds = sensors.getFanSpeeds();
             for (int i = 0; i < speeds.length; i++) {
-                list.add("Fan " + i + " speed: " + speeds[i] + "rpm");
+                list.add("Prędkość wentylatora: " + i + " - " + speeds[i] + "obr/min");
             }
             ObservableList<String> observableArrayList =
                     FXCollections.observableArrayList(list);
             listView.setItems(observableArrayList);
         }
     }
-    public void printMobo(ComputerSystem computerSystem) {
+    private void printMobo(ComputerSystem computerSystem) {
         list.add("Motherboard: " + computerSystem.getBaseboard().getModel());
         list.add(" Manufacturer: " + computerSystem.getBaseboard().getManufacturer());
         list.add(" Serial number: " + computerSystem.getBaseboard().getSerialNumber());
@@ -268,7 +268,7 @@ public class Controller implements Initializable {
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
     }
-    public void printSystem(final OperatingSystem os) {
+    private void printSystem(final OperatingSystem os) {
         list.add(String.valueOf(os));
 
         Format f = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -305,9 +305,8 @@ public class Controller implements Initializable {
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
     }
-    public void printProcesses(OperatingSystem os, GlobalMemory memory) {
-        list.add("Processes: " + os.getProcessCount() + ", Threads: " + os.getThreadCount());
-        // Sort by highest CPU
+    private void printProcesses(OperatingSystem os, GlobalMemory memory) {
+        list.add("Ilość procesów: " + os.getProcessCount() + ", Ilość wątków: " + os.getThreadCount());
         List<OSProcess> procs = Arrays.asList(os.getProcesses(5, OperatingSystem.ProcessSort.CPU));
 
         list.add("   PID  %CPU %MEM       VSZ       RSS Name");
@@ -324,7 +323,7 @@ public class Controller implements Initializable {
         listView.setItems(observableArrayList);
     }
 
-    public void printUsbDevices(UsbDevice[] usbDevices) {
+    private void printUsbDevices(UsbDevice[] usbDevices) {
         for (UsbDevice usbDevice : usbDevices) {
             list.add(String.valueOf(usbDevice));
         }
@@ -333,11 +332,12 @@ public class Controller implements Initializable {
         listView.setItems(observableArrayList);
     }
 
-    public void printDisplays(Display[] displays) {
+    private void printDisplays(Display[] displays) {
         int i = 1;
         for (Display display : displays) {
             list.add(" Display " + i + ":");
             list.add(String.valueOf(display));
+            list.add("");
             i++;
         }
         ObservableList<String> observableArrayList =
@@ -358,18 +358,27 @@ public class Controller implements Initializable {
         listView.setItems(observableArrayList);
     }
 
-    public void printFileSystem(FileSystem fileSystem) {
-        list.add(String.format(" File Descriptors: %d/%d", fileSystem.getOpenFileDescriptors(),
+    private void printFileSystem(FileSystem fileSystem) {
+        list.add(String.format("Deskryptory plików: %d/%d", fileSystem.getOpenFileDescriptors(),
                 fileSystem.getMaxFileDescriptors()));
+        DecimalFormat df = new DecimalFormat("#.##");
 
         OSFileStore[] fsArray = fileSystem.getFileStores();
-        for (OSFileStore fs : fsArray) {
+        for (int i = 0; i < fsArray.length; i++) {
+            OSFileStore fs = fsArray[i];
             long usable = fs.getUsableSpace();
             long total = fs.getTotalSpace();
-            list.add(String.format(
-                    " %s (%s) [%s] %s of %s free (%.1f%%)",
-                    fs.getName(), fs.getDescription().isEmpty() ? "file system" : fs.getDescription(), fs.getType(),
-                    FormatUtil.formatBytes(usable), FormatUtil.formatBytes(fs.getTotalSpace()), 100d * usable / total));
+            int index = i + 1;
+            list.add("Dysk #" + index + ": ");
+            list.add("  Nazwa: " + fs.getName());
+            list.add("  Wolumin: " + fs.getLogicalVolume());
+            list.add("  Wolumin logiczny: " + fs.getVolume());
+            list.add("  Opis: " + (fs.getDescription().isEmpty() ? "system plików" : fs.getDescription()));
+            list.add("  Typ: " + fs.getType());
+            double fsp = 100d * usable / total;
+            double fip = 100d * fs.getFreeInodes() / fs.getTotalInodes();
+            list.add("  Wolne miejsce: " + FormatUtil.formatBytes(usable) + (fsp > 0 ?  " (" + df.format(fsp) + "%)" : "") + " z " + FormatUtil.formatBytes(fs.getTotalSpace()));
+            list.add("  Wolne i-węzły: " + FormatUtil.formatValue(fs.getFreeInodes(), "") + (fip > 0 ?  " (" + df.format(fip) + "%)" : "") + " z " + FormatUtil.formatValue(fs.getTotalInodes(), ""));
         }
 
         ObservableList<String> observableArrayList =
@@ -378,12 +387,11 @@ public class Controller implements Initializable {
     }
 
     private void printPowerSources(PowerSource[] powerSources) {
-        StringBuilder sb = new StringBuilder("Power Sources: ");
         if (powerSources.length == 0) {
             list.add("Not found.");
         }
         for (PowerSource powerSource : powerSources) {
-            list.add(powerSource.getName());
+            list.add("Nazwa źródła: " + powerSource.getName());
             String f = String.format("%.2f", powerSource.getRemainingCapacity()*100);
             list.add("Remaining: " + f + "%");
             if (powerSource.getTimeRemaining()<0) {
@@ -398,6 +406,7 @@ public class Controller implements Initializable {
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
