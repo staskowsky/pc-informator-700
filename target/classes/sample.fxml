@@ -22,17 +22,18 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Button fx:id="cpuBtn" layoutX="55.0" layoutY="10.0" mnemonicParsing="false" onAction="#getCpu" prefHeight="25.0" prefWidth="130" text="Procesor" />
-                  <Button fx:id="diskBtn" layoutX="55.0" layoutY="50.0" mnemonicParsing="false" onAction="#getDisk" prefHeight="25.0" prefWidth="130" text="Dysk" />
-                  <Button fx:id="sensorBtn" layoutX="55.0" layoutY="90.0" mnemonicParsing="false" onAction="#getSensor" prefHeight="25.0" prefWidth="130" text="Czujnik" />
-                  <Button fx:id="moboBtn" layoutX="55.0" layoutY="130.0" mnemonicParsing="false" onAction="#getMobo" prefHeight="25.0" prefWidth="130" text="Płyta główna" />
+                  <Button fx:id="cpuBtn" layoutX="55.0" layoutY="10.0" mnemonicParsing="false" onAction="#getCpu" prefHeight="25.0" prefWidth="130" text="Processor" />
+                  <Button fx:id="diskBtn" layoutX="55.0" layoutY="50.0" mnemonicParsing="false" onAction="#getDisk" prefHeight="25.0" prefWidth="130" text="Disks" />
+                  <Button fx:id="sensorBtn" layoutX="55.0" layoutY="90.0" mnemonicParsing="false" onAction="#getSensor" prefHeight="25.0" prefWidth="130" text="Sensors" />
+                  <Button fx:id="moboBtn" layoutX="55.0" layoutY="130.0" mnemonicParsing="false" onAction="#getMobo" prefHeight="25.0" prefWidth="130" text="Motherboard" />
                   <Button fx:id="systemBtn" layoutX="55.0" layoutY="170.0" mnemonicParsing="false" onAction="#getSystem" prefHeight="25.0" prefWidth="130" text="System" />
-                  <Button fx:id="processesBtn" layoutX="55.0" layoutY="210.0" mnemonicParsing="false" onAction="#getProcesses" prefHeight="25.0" prefWidth="130" text="Procesy" />
-                   <Button fx:id="usbBtn" layoutX="55.0" layoutY="250.0" mnemonicParsing="false" onAction="#getUsbDevices" prefHeight="25.0" prefWidth="130.0" text="Urządzenia USB" />
-                   <Button fx:id="displayBtn" layoutX="55.0" layoutY="290.0" mnemonicParsing="false" onAction="#getDisplays" prefHeight="25.0" prefWidth="130.0" text="Monitory" />
-                   <Button fx:id="soundCardBtn" layoutX="55.0" layoutY="330.0" mnemonicParsing="false" onAction="#getSoundCards" prefHeight="25.0" prefWidth="130.0" text="Karty dźwiękowe" />
-                   <Button fx:id="fileSystemBtn" layoutX="55.0" layoutY="370.0" mnemonicParsing="false" onAction="#getFileSystem" prefHeight="25.0" prefWidth="130.0" text="System plików" />
-                   <Button fx:id="powerSourcesBtn" layoutX="55.0" layoutY="410.0" mnemonicParsing="false" onAction="#getPowerSources" prefHeight="25.0" prefWidth="130.0" text="Źródła zasilania" />
+                  <Button fx:id="processesBtn" layoutX="55.0" layoutY="210.0" mnemonicParsing="false" onAction="#getProcesses" prefHeight="25.0" prefWidth="130" text="Processes" />
+                   <Button fx:id="usbBtn" layoutX="55.0" layoutY="250.0" mnemonicParsing="false" onAction="#getUsbDevices" prefHeight="25.0" prefWidth="130.0" text="USB Devices" />
+                   <Button fx:id="displayBtn" layoutX="55.0" layoutY="290.0" mnemonicParsing="false" onAction="#getDisplays" prefHeight="25.0" prefWidth="130.0" text="Displays" />
+                   <Button fx:id="soundCardBtn" layoutX="55.0" layoutY="330.0" mnemonicParsing="false" onAction="#getSoundCards" prefHeight="25.0" prefWidth="130.0" text="Sound cards" />
+                   <Button fx:id="fileSystemBtn" layoutX="55.0" layoutY="370.0" mnemonicParsing="false" onAction="#getFileSystem" prefHeight="25.0" prefWidth="130.0" text="File system" />
+                   <Button fx:id="powerSourcesBtn" layoutX="55.0" layoutY="410.0" mnemonicParsing="false" onAction="#getPowerSources" prefHeight="25.0" prefWidth="130.0" text="Power sources" />
+                   <Button fx:id="graphicCardBtn" layoutX="55.0" layoutY="450.0" mnemonicParsing="false" onAction="#getGraphicCards" prefHeight="25.0" prefWidth="130.0" text="Graphic cards" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">

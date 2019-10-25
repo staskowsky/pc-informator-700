@@ -16,12 +16,17 @@ import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Controller implements Initializable {
     SystemInfo si = new SystemInfo();
@@ -54,20 +59,22 @@ public class Controller implements Initializable {
     @FXML
     public Button powerSourcesBtn;
     @FXML
+    public Button graphicCardBtn;
+    @FXML
     public ListView<String> listView;
 
 
     public void getCpu() {
         listView.setItems(null);
         list.clear();
-        category.setText("Procesor");
+        category.setText("Processor");
         printProcessor(hal.getProcessor());
     }
 
     public void getMobo() {
         listView.setItems(null);
         list.clear();
-        category.setText("Płyta główna");
+        category.setText("Motherboard");
         printMobo(hal.getComputerSystem());
     }
 
@@ -81,54 +88,63 @@ public class Controller implements Initializable {
     public void getSensor() {
         listView.setItems(null);
         list.clear();
-        category.setText("Czujniki");
+        category.setText("Sensors");
         printSensor(hal.getSensors());
     }
 
     public void getDisk() {
         listView.setItems(null);
         list.clear();
-        category.setText("Dyski");
+        category.setText("Disks");
         printDisk(hal.getDiskStores());
     }
 
     public void getProcesses() {
         listView.setItems(null);
         list.clear();
-        category.setText("Procesy");
+        category.setText("Processes");
         printProcesses(os, hal.getMemory());
     }
 
     public void getUsbDevices() {
         listView.setItems(null);
         list.clear();
-        category.setText("Urządzenia USB");
+        category.setText("USB Devices");
         printUsbDevices(hal.getUsbDevices(true));
     }
 
     public void getDisplays() {
         listView.setItems(null);
         list.clear();
-        category.setText("Monitory");
+        category.setText("Displays");
         printDisplays(hal.getDisplays());
     }
 
     public void getSoundCards() {
         listView.setItems(null);
         list.clear();
-        category.setText("Karty dźwiękowe");
+        category.setText("Sound cards");
         printSoundCards(hal.getSoundCards());
     }
 
     public void getFileSystem() {
         listView.setItems(null);
         list.clear();
-        category.setText("System plików");
+        category.setText("File system");
         printFileSystem(os.getFileSystem());
     }
 
     public void getPowerSources() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Power sources");
         printPowerSources(hal.getPowerSources());
+    }
+
+    public void getGraphicCards() {
+        listView.setItems(null);
+        list.clear();
+        category.setText("Graphic cards");
     }
 
     public void printProcessor(CentralProcessor processor) {
@@ -157,17 +173,13 @@ public class Controller implements Initializable {
                 100d * user / totalCpu, 100d * nice / totalCpu, 100d * sys / totalCpu, 100d * idle / totalCpu,
                 100d * iowait / totalCpu, 100d * irq / totalCpu, 100d * softirq / totalCpu, 100d * steal / totalCpu));
         list.add(String.format("CPU load: %.1f%%", processor.getSystemCpuLoadBetweenTicks(prevTicks) * 100));
-        double[] loadAverage = processor.getSystemLoadAverage(3);
-        list.add("CPU load averages:" + (loadAverage[0] < 0 ? " N/A" : String.format(" %.2f", loadAverage[0]))
-                + (loadAverage[1] < 0 ? " N/A" : String.format(" %.2f", loadAverage[1]))
-                + (loadAverage[2] < 0 ? " N/A" : String.format(" %.2f", loadAverage[2])));
         // per core CPU
-        StringBuilder procCpu = new StringBuilder("CPU load per processor:");
+        list.add("CPU load per thread:");
         double[] load = processor.getProcessorCpuLoadBetweenTicks(prevProcTicks);
-        for (double avg : load) {
-            procCpu.append(String.format(" %.1f%%", avg * 100));
+        for (int i = 0; i < load.length; i++) {
+            double avg = load[i];
+            list.add("  Thread " + (i + 1) + ": " + String.format(" %.1f%%", avg * 100));
         }
-        list.add(procCpu.toString());
         long freq = processor.getVendorFreq();
         if (freq > 0) {
             list.add("Vendor Frequency: " + FormatUtil.formatHertz(freq));
@@ -178,29 +190,35 @@ public class Controller implements Initializable {
         }
         long[] freqs = processor.getCurrentFreq();
         if (freqs[0] > 0) {
-            StringBuilder sb = new StringBuilder("Current Frequencies: ");
+            list.add("Current Frequencies: ");
             for (int i = 0; i < freqs.length; i++) {
-                if (i > 0) {
-                    sb.append(", ");
-                }
-                sb.append(FormatUtil.formatHertz(freqs[i]));
+                list.add("  Core " + (i + 1) + ": " + FormatUtil.formatHertz(freqs[i]));
             }
-            list.add(sb.toString());
+            ObservableList<String> observableArrayList =
+                    FXCollections.observableArrayList(list);
+            listView.setItems(observableArrayList);
         }
-        ObservableList<String> observableArrayList =
-                FXCollections.observableArrayList(list);
-        listView.setItems(observableArrayList);
     }
 
     public void printDisk(HWDiskStore[] diskStores) {
         for (HWDiskStore disk : diskStores) {
-            list.add(" Nazwa: " + disk.getName());
+            list.add(" Name: " + disk.getName());
             list.add(" Model: " + disk.getModel());
-            list.add(" Numer seryjny: " + disk.getSerial());
-            list.add(" Rozmiar dysku: " + (disk.getSize()/1073741824) + "GB");
-            list.add(" Czas pracy: " + (disk.getTransferTime()/60000) + "min");
-            list.add(" Czas pracy od znacznika czasu: " + (disk.getTimeStamp()/1440000) + " dni");
-            list.add(" Partycje: ");
+            list.add(" Serial number: " + disk.getSerial());
+            list.add(" Disk size: " + (disk.getSize()/1073741824) + "GB");
+            list.add(" Transfer time: " + (disk.getTransferTime()/60000) + "min");
+            Format f = new SimpleDateFormat("dd-MM-yyyy");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            Date date = null;
+            try {
+                date = df.parse(Instant.now().minusMillis(disk.getTimeStamp()).toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String timestamp = f.format(date);
+            list.add(" Timestamp: " + timestamp);
+
+            list.add(" Partitions: ");
             HWPartition[] partitions = disk.getPartitions();
             for (HWPartition part : partitions) {
                 list.add("     " + part.getIdentification());
@@ -237,23 +255,51 @@ public class Controller implements Initializable {
         }
     }
     public void printMobo(ComputerSystem computerSystem) {
-        list.add("Płyta główna: " + computerSystem.getBaseboard().getModel());
-        list.add(" Dystrybucja: " + computerSystem.getBaseboard().getManufacturer());
-        list.add(" Numer seryjny: " + computerSystem.getBaseboard().getSerialNumber());
-        list.add(" Wersja: " + computerSystem.getBaseboard().getVersion());
+        list.add("Motherboard: " + computerSystem.getBaseboard().getModel());
+        list.add(" Manufacturer: " + computerSystem.getBaseboard().getManufacturer());
+        list.add(" Serial number: " + computerSystem.getBaseboard().getSerialNumber());
+        list.add(" Version: " + computerSystem.getBaseboard().getVersion());
         list.add("");
-        list.add("BIOS: " + computerSystem.getFirmware().getName());
-        list.add(" Dystrybucja: " + computerSystem.getFirmware().getManufacturer());
-        list.add(" Wersja: " + computerSystem.getFirmware().getVersion());
-        list.add(" Data wydania: " + computerSystem.getFirmware().getReleaseDate());
+        list.add("Firmware: " + computerSystem.getFirmware().getName());
+        list.add(" Manufacturer: " + computerSystem.getFirmware().getManufacturer());
+        list.add(" Version: " + computerSystem.getFirmware().getVersion());
+        list.add(" Release date: " + computerSystem.getFirmware().getReleaseDate());
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
     }
     public void printSystem(final OperatingSystem os) {
         list.add(String.valueOf(os));
-        list.add("Booted: " + Instant.ofEpochSecond(os.getSystemBootTime()));
+
+        Format f = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Date date = null;
+        try {
+            date = df.parse(Instant.ofEpochSecond(os.getSystemBootTime()).toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String updateDate = f.format(date);
+        list.add("Last update: " + updateDate);
         list.add("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
+
+        try {
+            String result = null;
+            Process p = Runtime.getRuntime().exec("wmic bios get serialnumber");
+            BufferedReader input
+                    = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = input.readLine()) != null) {
+                if (line.length()==23) {
+                    result = line;
+                }
+            }
+            list.add("Serial number: " + result);
+            input.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         list.add("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
@@ -290,7 +336,7 @@ public class Controller implements Initializable {
     public void printDisplays(Display[] displays) {
         int i = 1;
         for (Display display : displays) {
-            list.add(" Monitor " + i + ":");
+            list.add(" Display " + i + ":");
             list.add(String.valueOf(display));
             i++;
         }
@@ -301,7 +347,10 @@ public class Controller implements Initializable {
 
     public void printSoundCards(SoundCard[] cards) {
         for (SoundCard card : cards) {
-            list.add(" " + String.valueOf(card));
+            list.add(" Name: " + card.getName());
+            list.add(" Codec: " + card.getCodec());
+            list.add(" Version: " + card.getDriverVersion());
+            list.add("");
         }
 
         ObservableList<String> observableArrayList =
@@ -318,14 +367,9 @@ public class Controller implements Initializable {
             long usable = fs.getUsableSpace();
             long total = fs.getTotalSpace();
             list.add(String.format(
-                    " %s (%s) [%s] %s of %s free (%.1f%%), %s of %s files free (%.1f%%) is %s "
-                            + (fs.getLogicalVolume() != null && fs.getLogicalVolume().length() > 0 ? "[%s]" : "%s")
-                            + " and is mounted at %s",
+                    " %s (%s) [%s] %s of %s free (%.1f%%)",
                     fs.getName(), fs.getDescription().isEmpty() ? "file system" : fs.getDescription(), fs.getType(),
-                    FormatUtil.formatBytes(usable), FormatUtil.formatBytes(fs.getTotalSpace()), 100d * usable / total,
-                    FormatUtil.formatValue(fs.getFreeInodes(), ""), FormatUtil.formatValue(fs.getTotalInodes(), ""),
-                    100d * fs.getFreeInodes() / fs.getTotalInodes(), fs.getVolume(), fs.getLogicalVolume(),
-                    fs.getMount()));
+                    FormatUtil.formatBytes(usable), FormatUtil.formatBytes(fs.getTotalSpace()), 100d * usable / total));
         }
 
         ObservableList<String> observableArrayList =
@@ -336,12 +380,18 @@ public class Controller implements Initializable {
     private void printPowerSources(PowerSource[] powerSources) {
         StringBuilder sb = new StringBuilder("Power Sources: ");
         if (powerSources.length == 0) {
-            list.add("Nie znaleziono.");
+            list.add("Not found.");
         }
         for (PowerSource powerSource : powerSources) {
             list.add(powerSource.getName());
-            list.add("Pozostało " + powerSource.getRemainingCapacity()*100 + "%");
-            list.add("Pozostały czas pracy: " + powerSource.getTimeRemaining()/60 + "min");
+            String f = String.format("%.2f", powerSource.getRemainingCapacity()*100);
+            list.add("Remaining: " + f + "%");
+            if (powerSource.getTimeRemaining()<0) {
+                list.add("Time left: charging");
+            } else {
+                f = String.format("%.2f", (powerSource.getTimeRemaining()/60));
+                list.add("Time left: " + f + "min");
+            }
         }
 
         ObservableList<String> observableArrayList =
