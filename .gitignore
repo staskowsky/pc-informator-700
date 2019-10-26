@@ -50,3 +50,6 @@ mvnw.cmd
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### cached ###
+dxdiag_output.txt
