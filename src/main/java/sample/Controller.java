@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.jna.platform.unix.X11;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
+import oshi.util.ExecutingCommand;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
 
@@ -146,6 +148,7 @@ public class Controller implements Initializable {
         listView.setItems(null);
         list.clear();
         category.setText("Graphic cards");
+        printGraphicCards();
     }
 
     public void printProcessor(CentralProcessor processor) {
@@ -282,24 +285,7 @@ public class Controller implements Initializable {
         String updateDate = f.format(date);
         list.add("Last update: " + updateDate);
         list.add("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
-
-        try {
-            String result = null;
-            Process p = Runtime.getRuntime().exec("wmic bios get serialnumber");
-            BufferedReader input
-                    = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = input.readLine()) != null) {
-                if (line.length()==23) {
-                    result = line;
-                }
-            }
-            list.add("Serial number: " + result);
-            input.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        list.add("Serial number: " + ExecutingCommand.getAnswerAt("wmic path softwarelicensingservice get OA3xOriginalProductKey", 2));
         list.add("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
@@ -402,6 +388,38 @@ public class Controller implements Initializable {
             }
         }
 
+        ObservableList<String> observableArrayList =
+                FXCollections.observableArrayList(list);
+        listView.setItems(observableArrayList);
+    }
+
+    private void printGraphicCards() {
+        try {
+            String filePath = "./dxdiag_output.txt";
+            ProcessBuilder pb = new ProcessBuilder("cmd.exe","/c","dxdiag","/t",filePath);
+            Process p = pb.start();
+            p.waitFor();
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            String line;
+            int i=0;
+            while((line = br.readLine()) != null){
+                if(line.trim().startsWith("Card name:")
+                        || line.trim().startsWith("Current Mode:")
+                        || line.trim().startsWith("Dedicated Memory:")){
+                    list.add(line.trim());
+                    i++;
+                    if (i==3) {
+                        list.add("");
+                        i=0;
+                    }
+                }
+            }
+        } catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        if ((list.isEmpty())) {
+            list.add("Graphic cards not found.");
+        }
         ObservableList<String> observableArrayList =
                 FXCollections.observableArrayList(list);
         listView.setItems(observableArrayList);
